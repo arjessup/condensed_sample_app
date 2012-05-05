@@ -90,7 +90,7 @@ describe User do
       hash = @attr.merge(:password => long, :password_confirmation => long)
       User.new(hash).should_not be_valid
     end
-  end
+  end # password validations
 
   describe "password encryption" do
     before(:each) do
@@ -112,7 +112,7 @@ describe User do
       it "should be false if the passwords don't match" do
         @user.has_password?("invalid").should be_false
       end
-    end
+    end 
     
     describe "authenticate method" do
       it "should return nil on email/password mismatch" do
@@ -129,6 +129,25 @@ describe User do
         matching_user = User.authenticate(@attr[:email], @attr[:password])
         matching_user.should == @user
       end
+    end # authenticate method
+  end # password encryption
+  
+  describe "admin attribute" do
+    before(:each) do
+      @user = User.create!(@attr)
     end
-  end
+    
+    it "should respond to admin" do
+      @user.should respond_to(:admin)
+    end
+    
+    it "should not be an admin by default" do
+      @user.should_not be_admin
+    end
+    
+    it "should be convertible to an admin" do
+      @user.toggle!(:admin)
+      @user.should be_admin
+    end
+  end # admin attribute
 end
